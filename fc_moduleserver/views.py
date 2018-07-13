@@ -1,10 +1,8 @@
-from django.shortcuts import render
 from fc_moduleserver import module_executor
-from django.core.files.images import ImageFile
-from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-import os
+import requests
+from fc_moduleserver import preprocess
 
 # Create your views here.
 @api_view(['GET','POST'])
@@ -12,10 +10,18 @@ def classify_image(request):
     if request.method == 'POST':
         print('1')
         return Response('1111')
+
     else :
-        print(os.getcwd())
-        input_file = os.listdir('./fc_moduleserver/test_image')
-        print('list of file : %s' %input_file)
-        answer = module_executor.test('./fc_moduleserver/test_image/'+input_file[0])
+        #url = request.data
+        url = 'https://s3.ap-northeast-2.amazonaws.com/foodchainimage/1531425656582.jpg'
+        test_image = './fc_moduleserver/test_image/test_image.jpg'
+        image_data = requests.get(url, stream=True)
+        with open(test_image, 'wb') as handler:
+            handler.write(image_data.content)
+
+        preprocess.image_resizing(test_image)
+        answer, sup = module_executor.test(test_image)
+
         print('answer : %s' %answer)
-        return Response(answer)
+        return Response([sup, answer])
+        #return Response('1')

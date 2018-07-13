@@ -21,18 +21,36 @@ def test(img_path):
             saver = tf.train.Saver()
 
             with tf.Session(config=tf.ConfigProto(log_device_placement=True)) as sess:
-                saver.restore(sess, './fc_moduleserver/checkpoint_momentum/149_model.ckpt')
+
+                saver.restore(sess, 'put your model in here')
                 test_data = preprocess.get_test_tensor(32, img_path)
                 data = test_data.__next__()
                 bx = data[0]
                 by = data[1]
                 probability, loss, predict = sess.run([prob, cross_entropy, prediction],
                                                       feed_dict={x:bx, y:by})
-                print('probability : %s ' %probability[0])
-                print('prediction : %s' %predict[0])
+                # print('probability : %s ' %probability[0])
+                # print('prediction : %s' %predict[0])
+                # print(preprocess.superclass_dict)
                 for label, id in preprocess.subclass_dict.items():
                     if id == predict[0]:
-                        return label
+                        # print('id : %d' %id)
+                        if id == 0 or id == 1:
+                            superclass = preprocess.superclass_dict[0]
+                            print('%s, %s' %(label, superclass))
+                            return label, superclass
+                        elif id == 2 or id == 3:
+                            superclass = preprocess.superclass_dict[1]
+                            print('%s, %s' % (label, superclass))
+                            return label, superclass
+                        elif id == 4 or id == 5:
+                            superclass = preprocess.superclass_dict[2]
+                            print('%s, %s' % (label, superclass))
+                            return label, superclass
+                        elif id == 6 or id == 7:
+                            superclass = preprocess.superclass_dict[3]
+                            print('%s, %s' % (label, superclass))
+                            return label, superclass
 
     return None
 

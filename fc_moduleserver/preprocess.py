@@ -4,7 +4,8 @@ import os
 import itertools as it
 import random
 
-superclass_dict = {'견과류':0, '과일류':1, '유제품':2, '육류':3}
+#superclass_dict = {'견과류':0, '과일류':1, '유제품':2, '육류':3}
+superclass_dict = ['견과류', '과일류', '유제품', '육류']
 subclass_dict = {'아몬드': 0, '호두': 1, '바나나': 2, '사과': 3, '요거트': 4, '우유': 5, '돼지고기': 6, '소고기': 7}
 
 def create_data2tensor(batch_size, im_path):
@@ -31,6 +32,7 @@ def create_data2tensor(batch_size, im_path):
 
     # Do it again for feeding to the network (trained with batch data size of 32)
     im = Image.open('./fc_moduleserver/pork.png')
+    # im = Image.open('./fc_moduleserver/test_image/walnut.jpg')
     im_tmp = np.array(im)
     if np.shape(im_tmp) != (224,224,3):
         im_tmp = im_tmp.reshape(-1, 224, 224)
@@ -85,3 +87,8 @@ def get_test_tensor(batch_size, img_path):
                                           cycle=True,
                                           batch_fn=lambda x:list(zip(*x)))
     return tensor_of_test_data
+
+def image_resizing(img_path):
+    im = Image.open(img_path)
+    im = im.resize((224,224), Image.ANTIALIAS)
+    im.save(img_path)
